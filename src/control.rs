@@ -19,6 +19,13 @@ pub fn menu() -> (bool, bool){
 	(true, false)
 }
 
-pub fn card_change(window:&mut RenderWindow, card:&mut Sprite) {
-
+pub fn card_right() -> bool {
+	let mut is_next_card:bool = false;
+	if keyboard::is_key_pressed(keyboard::D) {is_next_card = true}
+	is_next_card
+}
+pub fn card_left() -> bool {
+	let mut is_last_card:bool = false;
+	if keyboard::is_key_pressed(keyboard::A) {is_last_card = true}
+	is_last_card
 }

@@ -31,6 +31,11 @@ pub fn one(card_number:uint) -> Sprite {
 	let scale_vec = Vector2f::new(0.80, 0.80);
 	match card_number {
 		0	=>	{current_name = "Fool";current_location = "../resources/image/00.jpg";}
+		1	=>	{current_name = "Fool";current_location = "../resources/image/01.jpg";}
+		2	=>	{current_name = "Fool";current_location = "../resources/image/02.jpg";}
+		3	=>	{current_name = "Fool";current_location = "../resources/image/03.jpg";}
+		4	=>	{current_name = "Fool";current_location = "../resources/image/04.jpg";}
+		5	=>	{current_name = "Fool";current_location = "../resources/image/05.jpg";}
 		_	=>	fail!(~"Error, finding card location")
 	}
 
