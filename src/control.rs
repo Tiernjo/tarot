@@ -23,7 +23,7 @@ pub fn card_shift(window:&mut RenderWindow) -> int {
 	let mut move:int = 0;
 	loop {
 		match window.poll_event() {
-			event::KeyReleased{code, ..}	=> match code {
+			event::KeyPressed{code, ..}	=> match code {
 				keyboard::D	=>	{move = 1}
 				keyboard::A	=>	{move = -1}
 				_			=>	{}
@@ -32,6 +32,5 @@ pub fn card_shift(window:&mut RenderWindow) -> int {
 			_							=>	{}
 		}
 	}
-	println!("move is {}", move);
 	move
 }

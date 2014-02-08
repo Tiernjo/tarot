@@ -36,6 +36,22 @@ pub fn one(card_number:int) -> Sprite {
 		3	=>	{current_name = "Fool";current_location = "../resources/image/03.jpg";}
 		4	=>	{current_name = "Fool";current_location = "../resources/image/04.jpg";}
 		5	=>	{current_name = "Fool";current_location = "../resources/image/05.jpg";}
+		6	=>	{current_name = "Fool";current_location = "../resources/image/06.jpg";}
+		7	=>	{current_name = "Fool";current_location = "../resources/image/07.jpg";}
+		8	=>	{current_name = "Fool";current_location = "../resources/image/08.jpg";}
+		9	=>	{current_name = "Fool";current_location = "../resources/image/09.jpg";}
+		10	=>	{current_name = "Fool";current_location = "../resources/image/10.jpg";}
+		11	=>	{current_name = "Fool";current_location = "../resources/image/11.jpg";}
+		12	=>	{current_name = "Fool";current_location = "../resources/image/12.jpg";}
+		13	=>	{current_name = "Fool";current_location = "../resources/image/13.jpg";}
+		14	=>	{current_name = "Fool";current_location = "../resources/image/14.jpg";}
+		15	=>	{current_name = "Fool";current_location = "../resources/image/15.jpg";}
+		16	=>	{current_name = "Fool";current_location = "../resources/image/16.jpg";}
+		17	=>	{current_name = "Fool";current_location = "../resources/image/17.jpg";}
+		18	=>	{current_name = "Fool";current_location = "../resources/image/18.jpg";}
+		19	=>	{current_name = "Fool";current_location = "../resources/image/19.jpg";}
+		20	=>	{current_name = "Fool";current_location = "../resources/image/20.jpg";}
+		21	=>	{current_name = "Fool";current_location = "../resources/image/21.jpg";}
 		_	=>	fail!(~"Error, finding card location")
 	}
 
