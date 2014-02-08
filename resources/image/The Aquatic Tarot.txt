@@ -8,3 +8,6 @@ For non commercial use only.
 
 Size:
 480 x 640
+384 x 512 (at 80% full)
+240 x 320 (at 50% full)
+

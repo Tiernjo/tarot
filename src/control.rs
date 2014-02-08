@@ -12,3 +12,8 @@ pub fn exit(window: &mut RenderWindow) {
 		}
 	}
 }
+
+pub fn menu(window: &mut RenderWindow) -> (bool, bool){
+	if keyboard::is_key_pressed(keyboard::Space){return (false, true)}
+	(true, false)
+}

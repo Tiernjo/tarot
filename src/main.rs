@@ -1,6 +1,7 @@
 extern mod native;
 extern mod rsfml;
 mod control;
+mod menu;
 mod run;
 mod window;
 
