@@ -1,12 +1,21 @@
 extern mod rsfml;
-use rsfml::graphics::{Color, Font, Text};
+use rsfml::graphics::{Color, Font};
+use rsfml::graphics::rc::Text;
+use std::cell::RefCell;
+use std::rc::Rc;
 
 struct Menu<'s>{
 	font_location:&'s str,
 	contents:&'s str,
 }
 
-impl Menu {
+impl <'s>Menu<'s>{
+	//fn get_font_location<'s>(&'s self) -> &'s str {
+	//	self.font_location
+	//}
+	//fn get_contents<'s>(&'s self) -> &'s str {
+	//	self.contents
+	//}
 	fn font(&self, location:&str) -> Font {
 		let font = match Font::new_from_file(location) {
 			Some(font)	=>	font,
@@ -14,8 +23,8 @@ impl Menu {
 		};
 		font
 	}
-	fn text(&self, contents:&str, font:&Font, size:uint) -> Text {
-		let text = match Text::new_init(contents, font, size) {
+	fn text(&self) -> Text {
+		let text = match Text::new() {
 			Some(text)	=>	text,
 			None()		=>	fail!(~"Error, menu text."),
 		};
@@ -23,10 +32,17 @@ impl Menu {
 	}
 }
 
-pub fn new(){
-	let main = Menu{font_location:"../resources/font/Jura-Regular.ttf", contents:"Welcome to my Tarot app!"};
+pub fn new(font:&str, contents:&str, size:uint) -> Text{
+	let main:Menu = Menu{font_location:font, contents:contents};
+	// Setup font
 	let title_font = main.font(main.font_location);
-	let title_text = main.text(main.contents, &title_font, 30);
+	let title_ref_cell = RefCell::new(title_font);
+	let title_rc = Rc::new(title_ref_cell);
+	// Setup text
+	let mut title_text = main.text();
+	title_text.set_string(main.contents);
+	title_text.set_font(title_rc);
+	title_text.set_character_size(size);
 	title_text.set_color(&Color::black());
 	title_text
 }

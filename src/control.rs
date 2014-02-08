@@ -1,6 +1,7 @@
 extern mod rsfml;
 use rsfml::window::{event, keyboard};
 use rsfml::graphics::{RenderWindow};
+use rsfml::graphics::rc::{Sprite};
 
 pub fn exit(window: &mut RenderWindow) {
 	if keyboard::is_key_pressed(keyboard::Escape) {window.close()}
@@ -13,7 +14,11 @@ pub fn exit(window: &mut RenderWindow) {
 	}
 }
 
-pub fn menu(window: &mut RenderWindow) -> (bool, bool){
+pub fn menu() -> (bool, bool){
 	if keyboard::is_key_pressed(keyboard::Space){return (false, true)}
 	(true, false)
+}
+
+pub fn card_change(window:&mut RenderWindow, card:&mut Sprite) {
+
 }
