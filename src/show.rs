@@ -28,7 +28,7 @@ impl <'s>Card<'s> {
 
 pub fn one(window_three_forth_x:f32, window_half_y:f32, card_number:int) -> Sprite {
 	let (mut current_location, mut current_name) = ("../resources/image/00.jpg", "Fool");
-	let scale_vec = Vector2f::new(0.80, 0.80);
+	let scale_vec = Vector2f::new(0.9, 0.9);
 	
 	match card_number {
 		0	=>	{current_name = "Fool";current_location = "../resources/image/00.jpg";}

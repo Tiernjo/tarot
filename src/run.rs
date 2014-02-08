@@ -2,6 +2,7 @@ extern mod rsfml;
 use rsfml::graphics::{Color, RenderWindow};
 use rsfml::graphics::rc::{Sprite, Text};
 use rsfml::system::{Vector2f, Vector2u};
+use std::rand::{task_rng, Rng};
 mod control;
 mod menu;
 mod show;
@@ -12,17 +13,19 @@ pub fn main_loop() {
 	let mut window = ::window::create();
 	let window_vec:Vector2u = window.get_size();
 	let (window_x, window_y) = (window_vec.x as f32, window_vec.y as f32);
-	let (window_three_forth_x, window_half_y) = (window_x * 3.0 / 4.0, window_y / 2.0);
+	let (window_three_forth_x, window_forth_x, window_half_y, window_forth_y) = (window_x * 3.0 / 4.0, window_x / 4.0, window_y / 2.0, window_y / 4.0);
 	// Main set of bools
 	let (mut is_title, mut is_card_list) = (true, false);
 	let (mut is_next_card, mut is_last_card) = (false, false);
 	// Title Text
-	let title_position = Vector2f::new(0.0, 0.0);
 	let title_text = ::menu::new("../resources/font/Jura-DemiBold.ttf", "Welcome To Tarot",
-	 30, &title_position);
+	 	30, window_forth_x, window_forth_y, 0.0);
 	let directions_position = Vector2f::new(0.0, 35.0);
 	let directions = ::menu::new("../resources/font/Jura-DemiBold.ttf", "Press Space To Continue",
-		20, &directions_position);
+		20, window_forth_x, window_forth_y, 35.0);
+	// Find random card for title screen
+	let mut rng = task_rng();
+	let title_card = rng.gen_range(0, 77);
 	// What Card are we on
 	let mut card_counter:int = 0;
 
@@ -33,7 +36,8 @@ pub fn main_loop() {
 			let (got_title, got_card_list) = ::control::menu();
 			is_card_list = got_card_list;
 			is_title = got_title;
-			show_title(&mut window, &title_text, &directions);
+			let current_card = ::show::one(window_three_forth_x, window_half_y, title_card);
+			show_title(&mut window, &title_text, &directions, &current_card);
 		// Show all cards screen
 		} else if is_card_list{
 			if card_counter == -1 {card_counter = 77}
@@ -48,9 +52,10 @@ pub fn main_loop() {
 	}
 }
 
-fn show_title(window: &mut RenderWindow, title_text: &Text, directions:&Text) {
+fn show_title(window: &mut RenderWindow, title_text: &Text, directions:&Text, main_card:&Sprite) {
 	window.clear(&Color::white());
 	window.draw(title_text); window.draw(directions);
+	window.draw(main_card);
 	window.display()
 }
 fn show_all(window: &mut RenderWindow, current_card:&Sprite) {

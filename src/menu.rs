@@ -27,7 +27,8 @@ impl <'s>Menu<'s>{
 	}
 }
 
-pub fn new(font:&str, contents:&str, size:uint, position:&Vector2f) -> Text{
+pub fn new(font:&str, contents:&str, size:uint, 
+	window_forth_x:f32, window_half_y:f32, offset_y:f32) -> Text{
 	let main:Menu = Menu{font_location:font, contents:contents};
 	// Setup font
 	let title_font = main.font(main.font_location);
@@ -35,10 +36,13 @@ pub fn new(font:&str, contents:&str, size:uint, position:&Vector2f) -> Text{
 	let title_rc = Rc::new(title_ref_cell);
 	// Setup text
 	let mut title_text = main.text();
+	title_text.set_string(main.contents);
 	title_text.set_character_size(size);
 	title_text.set_color(&Color::black());
 	title_text.set_font(title_rc);
-	title_text.set_position(position);
-	title_text.set_string(main.contents);
+	let text_bounds = title_text.get_local_bounds();
+	title_text.set_origin2f(text_bounds.width/2.0, text_bounds.height/2.0);
+	title_text.set_position2f(window_forth_x, window_half_y + offset_y);
+	
 	title_text
 }
