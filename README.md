@@ -6,8 +6,8 @@ Create a Tarot Deck app/game
 Goals
 =====
 
-* Random generation
-* Load multiple images (sprites)
+* ~~Random generation~~
+* ~~Load multiple images (sprites)~~
 * Multiple Contexts
 * Choose to examine cards or get reading
 * Multiple readings
