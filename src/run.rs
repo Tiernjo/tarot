@@ -11,6 +11,8 @@ pub fn main_loop() {
 	// Window declare and info retrieval
 	let mut window = ::window::create();
 	let window_vec:Vector2u = window.get_size();
+	let (window_x, window_y) = (window_vec.x as f32, window_vec.y as f32);
+	let (window_three_forth_x, window_half_y) = (window_x * 3.0 / 4.0, window_y / 2.0);
 	// Main set of bools
 	let (mut is_title, mut is_card_list) = (true, false);
 	let (mut is_next_card, mut is_last_card) = (false, false);
@@ -22,7 +24,7 @@ pub fn main_loop() {
 	let directions = ::menu::new("../resources/font/Jura-DemiBold.ttf", "Press Space To Continue",
 		20, &directions_position);
 	// What Card are we on
-	let mut card_counter:int = 1;
+	let mut card_counter:int = 0;
 
 	while window.is_open() {
 		::control::exit(&mut window);
@@ -36,8 +38,10 @@ pub fn main_loop() {
 		} else if is_card_list{
 			if card_counter == -1 {card_counter = 0}
 			if card_counter == 22 {card_counter = 21}
-			let current_card = ::show::one(card_counter);
+
+			let current_card = ::show::one(window_three_forth_x, window_half_y, card_counter);
 			card_counter += ::control::card_shift(&mut window);
+
 			show_all(&mut window, &current_card);
 		}
 		
