@@ -36,8 +36,8 @@ pub fn main_loop() {
 			show_title(&mut window, &title_text, &directions);
 		// Show all cards screen
 		} else if is_card_list{
-			if card_counter == -1 {card_counter = 0}
-			if card_counter == 22 {card_counter = 21}
+			if card_counter == -1 {card_counter = 77}
+			if card_counter == 78 {card_counter = 0}
 
 			let current_card = ::show::one(window_three_forth_x, window_half_y, card_counter);
 			card_counter += ::control::card_shift(&mut window);
@@ -54,7 +54,7 @@ fn show_title(window: &mut RenderWindow, title_text: &Text, directions:&Text) {
 	window.display()
 }
 fn show_all(window: &mut RenderWindow, current_card:&Sprite) {
-	window.clear(&Color::black());
+	window.clear(&Color::white());
 	window.draw(current_card);
 	window.display()
 }
