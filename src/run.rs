@@ -17,7 +17,7 @@ pub fn main_loop() {
 	// Title Text
 	let title_text = ::menu::new("../resources/font/Jura-DemiBold.ttf", "Welcome to Tarot", 30);
 	// What Card are we on
-	let mut card_counter:uint = 0;
+	let mut card_counter:int = 1;
 
 	while window.is_open() {
 		::control::exit(&mut window);
@@ -30,14 +30,9 @@ pub fn main_loop() {
 		// Show all cards screen
 		} else if is_card_list{
 			let current_card = ::show::one(card_counter);
-			if card_counter <= 4 {let mut got_next_card = ::control::card_right(); 
-				if got_next_card{card_counter += 1}
-				got_next_card = false;
-			} else if card_counter >= 1 {let mut got_last_card = ::control::card_left(); 
-				if got_last_card{card_counter -= 1}
-				got_last_card = false;
+			if card_counter > 0 && card_counter < 5 {
+				card_counter += ::control::card_shift(&mut window);
 			}
-			
 			show_all(&mut window, &current_card);
 		}
 		

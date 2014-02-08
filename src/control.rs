@@ -19,13 +19,19 @@ pub fn menu() -> (bool, bool){
 	(true, false)
 }
 
-pub fn card_right() -> bool {
-	let mut is_next_card:bool = false;
-	if keyboard::is_key_pressed(keyboard::D) {is_next_card = true}
-	is_next_card
-}
-pub fn card_left() -> bool {
-	let mut is_last_card:bool = false;
-	if keyboard::is_key_pressed(keyboard::A) {is_last_card = true}
-	is_last_card
+pub fn card_shift(window:&mut RenderWindow) -> int {
+	let mut move:int = 0;
+	loop {
+		match window.poll_event() {
+			event::KeyReleased{code, ..}	=> match code {
+				keyboard::D	=>	{move = 1}
+				keyboard::A	=>	{move = -1}
+				_			=>	{}
+			},
+			event::NoEvent				=>	break,
+			_							=>	{}
+		}
+	}
+	println!("move is {}", move);
+	move
 }

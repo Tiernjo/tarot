@@ -26,7 +26,7 @@ impl <'s>Card<'s> {
 	}
 }
 
-pub fn one(card_number:uint) -> Sprite {
+pub fn one(card_number:int) -> Sprite {
 	let (mut current_location, mut current_name) = ("../resources/image/00.jpg", "Fool");
 	let scale_vec = Vector2f::new(0.80, 0.80);
 	match card_number {
