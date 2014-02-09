@@ -1,8 +1,9 @@
 extern mod rsfml;
-use rsfml::graphics::{Color, RenderWindow};
+use rsfml::graphics::{Color, RectangleShape, RenderWindow};
 use rsfml::graphics::rc::{Sprite, Text};
 use rsfml::system::{Vector2f, Vector2u};
 use std::rand::{task_rng, Rng};
+mod button;
 mod control;
 mod deck;
 mod menu;
@@ -15,13 +16,9 @@ pub fn main_loop() {
 	let (window_x, window_y) = (window_vec.x as f32, window_vec.y as f32);
 	let (window_three_fourth_x, window_fourth_x, window_half_y, window_fourth_y) = (window_x * 3.0 / 4.0, window_x / 4.0, window_y / 2.0, window_y / 4.0);
 	// Main set of bools
-	let mut screen = 1; let mut is_set = false;
+	let mut screen = 1; let mut is_set = false; let mut is_initialized = false;
 	// Title Text
-	let title_text = ::menu::new("../resources/font/Jura-DemiBold.ttf", "Welcome To Tarot",
-	 	30, window_fourth_x, window_fourth_y, 0.0);
-	let directions_position = Vector2f::new(0.0, 35.0);
-	let directions = ::menu::new("../resources/font/Jura-DemiBold.ttf", "Press Space To Continue",
-		20, window_fourth_x, window_fourth_y, 35.0);
+	let title_text = ::menu::new("../resources/font/Jura-DemiBold.ttf", "Welcome To Tarot", 30, window_fourth_x, window_fourth_y, 0.0);
 	// Find random card for title screen
 	let mut rng = task_rng();
 	let title_card = rng.gen_range(0, 77);
@@ -30,28 +27,28 @@ pub fn main_loop() {
 	let (mut card_one_rand, mut card_two_rand, mut card_three_rand, mut card_four_rand, mut card_five_rand) = (0,0,0,0,0);
 	let (mut all_cards, all_cards_desc) = ::deck::new(window_fourth_x, window_three_fourth_x, window_fourth_y, window_half_y);
 
-
 	while window.is_open() {
+		show_blank(&mut window);
 		::control::exit(&mut window);
-
 		match screen {
 			// Title Screen
 			1   =>	{
-				let got_screen = ::control::menu();
-				screen = got_screen;
-				////////////////////////////////////////////////////////////////////////////////////
-				// PART OF OLD METHOD //////////////////////////////////////////////////////////////
-				//let current_card = ::show::one(window_three_forth_x, window_half_y, title_card);
-				////////////////////////////////////////////////////////////////////////////////////
+				let all_button = ::button::new(200.0,window_fourth_x, 0.0, 50.0, window_half_y, 0.0);
+				let three_button = ::button::new(200.0, window_fourth_x, 0.0, 50.0, window_half_y, 75.0);
+				let five_button = ::button::new(200.0, window_fourth_x, 0.0, 50.0, window_half_y, 150.0);
+				let all_clicked = ::control::button(&mut window, all_button.get_global_bounds());
+		
+				let buttons = ~[&all_button, &three_button, &five_button];
+
+				//let got_screen = ::control::menu();
+				screen = all_clicked;
+				// Reset Random Cards
 				is_set = false;
-				show_title(&mut window, &title_text, &directions, &all_cards[title_card]);
+				show_title(&mut window, &title_text, &all_cards[title_card], buttons);
 			}
 			// Show All Cards
 			2	=>	{
-				//////////////////////////////////////////////////////////////////////////////////////
-				// OLD METHOD IN CASE I HAVE TO REVERT ///////////////////////////////////////////////
-				//let current_card = ::show::one(window_three_forth_x, window_half_y, card_counter);
-				//////////////////////////////////////////////////////////////////////////////////////
+				// Controls
 				let (got_counter, got_screen) = ::control::card_shift(&mut window);
 				// Never go out of bounds
 				if card_counter == 0 && got_counter == -1 {card_counter = 0}
@@ -87,7 +84,7 @@ pub fn main_loop() {
 						None()			=>	fail!(~"Error, card_three created.")
 					};
 					&card_one.set_position2f(window_x/6.0, window_y/3.0);&card_one.set_scale2f(0.60, 0.60);
-					&card_two.set_position2f(window_x/2.0, window_y*2.0/3.0);&card_two.set_scale2f(0.60, 0.60);
+					&card_two.set_position2f(window_x/2.0, window_y/3.0);&card_two.set_scale2f(0.60, 0.60);
 					&card_three.set_position2f(window_x*5.0/6.0, window_y/3.0);&card_three.set_scale2f(0.60, 0.60);
 					let mut cards = ~[card_one, card_two, card_three];
 					cards.shrink_to_fit();
@@ -133,11 +130,11 @@ pub fn main_loop() {
 						None()			=>	fail!(~"Error, card_five created.")
 					};
 
-					&card_one.set_position2f(window_x/6.0, window_y/4.0);&card_one.set_scale2f(0.40, 0.40);
-					&card_two.set_position2f(window_x/3.0, window_y*3.0/4.0);&card_two.set_scale2f(0.40, 0.40);
-					&card_three.set_position2f(window_x/2.0, window_y/4.0);&card_three.set_scale2f(0.40, 0.40);
-					&card_four.set_position2f(window_x*4.0/6.0, window_y*3.0/4.0);&card_four.set_scale2f(0.40, 0.40);
-					&card_five.set_position2f(window_x*5.0/6.0, window_y/4.0);&card_five.set_scale2f(0.40, 0.40);
+					&card_one.set_position2f(window_x/6.0, window_y/4.0);&card_one.set_scale2f(0.45, 0.45);
+					&card_two.set_position2f(window_x/2.0, window_y/4.0);&card_two.set_scale2f(0.45, 0.45);
+					&card_three.set_position2f(window_x*5.0/6.0, window_y/4.0);&card_three.set_scale2f(0.45, 0.45);
+					&card_four.set_position2f(window_x/2.0, window_y*3.0/4.0);&card_four.set_scale2f(0.45, 0.45);
+					&card_five.set_position2f(window_x*5.0/6.0, window_y*3.0/4.0);&card_five.set_scale2f(0.45, 0.45);
 					let mut cards = ~[card_one, card_two, card_three, card_four, card_five];
 					cards.shrink_to_fit();
 
@@ -157,12 +154,14 @@ pub fn main_loop() {
 }
 fn show_blank(window: &mut RenderWindow) {
 	window.clear(&Color::white());
-	window.display()
 }
 
-fn show_title(window: &mut RenderWindow, title_text: &Text, directions:&Text, main_card:&Sprite) {
+fn show_title(window: &mut RenderWindow, title_text: &Text, main_card:&Sprite, buttons:~[&RectangleShape]) {
 	window.clear(&Color::white());
-	window.draw(title_text); window.draw(directions);
+	window.draw(title_text);
+	for contents in buttons.iter() {
+		window.draw(*contents);
+	}
 	window.draw(main_card);
 	window.display()
 }

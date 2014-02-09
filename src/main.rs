@@ -1,5 +1,6 @@
 extern mod native;
 extern mod rsfml;
+mod button;
 mod control;
 mod deck;
 mod menu;
