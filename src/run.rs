@@ -16,7 +16,7 @@ pub fn main_loop() {
 	let (window_x, window_y) = (window_vec.x as f32, window_vec.y as f32);
 	let (window_three_forth_x, window_forth_x, window_half_y, window_forth_y) = (window_x * 3.0 / 4.0, window_x / 4.0, window_y / 2.0, window_y / 4.0);
 	// Main set of bools
-	let (mut is_title, mut is_card_list) = (true, false);
+	let (mut screen, title, display, reading) = (1, 1, 2, 3);
 	let (mut is_next_card, mut is_last_card) = (false, false);
 	// Title Text
 	let title_text = ::menu::new("../resources/font/Jura-DemiBold.ttf", "Welcome To Tarot",
@@ -28,32 +28,41 @@ pub fn main_loop() {
 	let mut rng = task_rng();
 	let title_card = rng.gen_range(0, 77);
 	// What Card are we on
-	let mut card_counter:int = 0;
-	println!("{}", 2345678);
+	let mut card_counter:int = 5;
+	let all_cards = ::deck::new(window_three_forth_x, window_half_y);
+
 
 	while window.is_open() {
 		::control::exit(&mut window);
-		// Title Screen
-		if is_title{
-			let (got_title, got_card_list) = ::control::menu();
-			is_card_list = got_card_list;
-			is_title = got_title;
-			let current_card = ::show::one(window_three_forth_x, window_half_y, title_card);
-			show_title(&mut window, &title_text, &directions, &current_card);
-		// Show all cards screen
-		} else if is_card_list{
-			// Wrap around cards
-			if card_counter == -1 {card_counter = 77}
-			if card_counter == 78 {card_counter = 0}
 
-			let current_card = ::show::one(window_three_forth_x, window_half_y, card_counter);
-			card_counter += ::control::card_shift(&mut window);
-			
-			println!("card_counter is {}", card_counter);
+		match screen {
+			// Title Screen
+			1   =>	{
+				let got_screen = ::control::menu();
+				screen = got_screen;
+				////////////////////////////////////////////////////////////////////////////////////
+				// PART OF OLD METHOD //////////////////////////////////////////////////////////////
+				//let current_card = ::show::one(window_three_forth_x, window_half_y, title_card);
+				////////////////////////////////////////////////////////////////////////////////////
+				show_title(&mut window, &title_text, &directions, &all_cards[title_card]);
+			}
+			// Show All Cards
+			2	=>	{
+				if card_counter == 0 {card_counter = 77} else if card_counter == 77 {card_counter = 0}
+				//////////////////////////////////////////////////////////////////////////////////////
+				// OLD METHOD IN CASE I HAVE TO REVERT ///////////////////////////////////////////////
+				//let current_card = ::show::one(window_three_forth_x, window_half_y, card_counter);
+				//////////////////////////////////////////////////////////////////////////////////////
+				card_counter += ::control::card_shift(&mut window);
 
-			show_all(&mut window, &current_card);
+				show_all(&mut window, &all_cards[card_counter]);
+			}
+			// 3 Card Reading
+			3	=>	{
+
+			}
+			_		=>	{fail!(~"Error, could not figure out screen to be on.");}
 		}
-		
 	}
 }
 

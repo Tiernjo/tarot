@@ -14,9 +14,10 @@ pub fn exit(window: &mut RenderWindow) {
 	}
 }
 
-pub fn menu() -> (bool, bool){
-	if keyboard::is_key_pressed(keyboard::Space){return (false, true)}
-	(true, false)
+pub fn menu() -> uint {
+	let mut screen:uint = 1;
+	if keyboard::is_key_pressed(keyboard::Space){screen = 2}
+	screen
 }
 
 pub fn card_shift(window:&mut RenderWindow) -> int {
@@ -35,5 +36,7 @@ pub fn card_shift(window:&mut RenderWindow) -> int {
 			_							=>	{}
 		}
 	}
+	if keyboard::is_key_pressed(keyboard::D){move = 1}
+	if keyboard::is_key_pressed(keyboard::A){move = -1}
 	move
 }

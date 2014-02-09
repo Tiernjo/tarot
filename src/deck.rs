@@ -9,6 +9,7 @@ use std::rc::Rc;
 struct Card<'s>{
 	name:&'s str,
 	img_loc:&'s str,
+	str_loc:&'s str,
 }
 impl <'s>Card<'s> {
 	fn texture(&self, file:&str) -> Texture{
@@ -25,6 +26,25 @@ impl <'s>Card<'s> {
 		};
 		sprite
 	}
+}
+
+pub fn new(window_three_forth_x:f32, window_half_y:f32) -> ~[Sprite] {
+	let mut major_arcana = major_arcana(window_three_forth_x, window_half_y);
+	let mut cups = cups(window_three_forth_x, window_half_y);
+	let mut pentacles = pentacles(window_three_forth_x, window_half_y);
+	let mut wands = wands(window_three_forth_x, window_half_y);
+	let mut swords = swords(window_three_forth_x, window_half_y);
+
+	let mut all = ~[];
+	all.push_all_move(major_arcana);
+	all.push_all_move(cups);
+	all.push_all_move(pentacles);
+	all.push_all_move(wands);
+	all.push_all_move(swords);
+	println!("all capacity is {}", all.capacity());
+	all.shrink_to_fit();
+	println!("all capacity is {}", all.capacity());
+	all
 }
 
 pub fn major_arcana(window_three_forth_x:f32, window_half_y:f32) -> ~[Sprite]{
