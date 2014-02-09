@@ -20,7 +20,8 @@ pub fn menu() -> (bool, bool){
 }
 
 pub fn card_shift(window:&mut RenderWindow) -> int {
-	let mut move:int = 0;
+	let mut move = 0;
+
 	loop {
 		match window.poll_event() {
 			event::KeyPressed{code, ..}	=> match code {

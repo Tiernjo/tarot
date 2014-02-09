@@ -4,6 +4,7 @@ use rsfml::graphics::rc::{Sprite, Text};
 use rsfml::system::{Vector2f, Vector2u};
 use std::rand::{task_rng, Rng};
 mod control;
+mod deck;
 mod menu;
 mod show;
 mod window;
@@ -28,6 +29,7 @@ pub fn main_loop() {
 	let title_card = rng.gen_range(0, 77);
 	// What Card are we on
 	let mut card_counter:int = 0;
+	println!("{}", 2345678);
 
 	while window.is_open() {
 		::control::exit(&mut window);
@@ -40,11 +42,14 @@ pub fn main_loop() {
 			show_title(&mut window, &title_text, &directions, &current_card);
 		// Show all cards screen
 		} else if is_card_list{
+			// Wrap around cards
 			if card_counter == -1 {card_counter = 77}
 			if card_counter == 78 {card_counter = 0}
 
 			let current_card = ::show::one(window_three_forth_x, window_half_y, card_counter);
 			card_counter += ::control::card_shift(&mut window);
+			
+			println!("card_counter is {}", card_counter);
 
 			show_all(&mut window, &current_card);
 		}

@@ -1,14 +1,16 @@
 extern mod rsfml;
 use rsfml::graphics::{RenderWindow, Texture};
-use rsfml::graphics::rc::Sprite;
+use rsfml::graphics::rc::{Sprite, Text};
 use rsfml::system::{Vector2f};
 use std::cell::RefCell;
 use std::rc::Rc;
 
 struct Card<'s>{
-	//name:&'s str,
-	location:&'s str
+	name:&'s str,
+	img_loc:&'s str,
+	txt_loc:&'s str,
 }
+
 impl <'s>Card<'s> {
 	fn texture(&self, file:&str) -> Texture{
 		let texture = match Texture::new_from_file(file) {
@@ -27,9 +29,9 @@ impl <'s>Card<'s> {
 }
 
 pub fn one(window_three_forth_x:f32, window_half_y:f32, card_number:int) -> Sprite {
-	let (mut current_location, mut current_name) = ("../resources/image/00.jpg", "Fool");
+	let (mut current_location, mut current_name) = ("", "");
 	let scale_vec = Vector2f::new(0.9, 0.9);
-	
+
 	match card_number {
 		0	=>	{current_name = "Fool";current_location = "../resources/image/00.jpg";}
 		1	=>	{current_name = "Fool";current_location = "../resources/image/01.jpg";}
@@ -111,10 +113,9 @@ pub fn one(window_three_forth_x:f32, window_half_y:f32, card_number:int) -> Spri
 		77	=>	{current_name = "Fool";current_location = "../resources/image/w_king.jpg";}
 		_	=>	fail!(~"Error, finding card location")
 	}
-
-	let current_card = Card{location:current_location};
+	let mut current_card = Card{name:current_name, img_loc:current_location, txt_loc:""};
 	// Setup texture
-	let current_texture = current_card.texture(current_location);
+	let current_texture = current_card.texture(current_card.img_loc);
 	let current_ref_cell = RefCell::new(current_texture);
 	let current_rc = Rc::new(current_ref_cell);
 	// Setup sprite
@@ -125,4 +126,5 @@ pub fn one(window_three_forth_x:f32, window_half_y:f32, card_number:int) -> Spri
 	current_sprite.set_origin2f(current_bounds.width / 2.0, current_bounds.height / 2.0);	// set origin as center of sprite
 	current_sprite.set_position2f(window_three_forth_x, window_half_y);	// set position as 3/4 of window x, 1/2 of window y
 	current_sprite
+
 }
