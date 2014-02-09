@@ -4,7 +4,6 @@ mod control;
 mod deck;
 mod menu;
 mod run;
-mod show;
 mod window;
 
 // Macs need rsfml to start on main thread

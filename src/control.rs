@@ -4,7 +4,6 @@ use rsfml::graphics::{RenderWindow};
 use rsfml::graphics::rc::{Sprite};
 
 pub fn exit(window: &mut RenderWindow) {
-	if keyboard::is_key_pressed(keyboard::Escape) {window.close()}
 	loop {
 		match window.poll_event() {
 			event::Closed	=> window.close(),
@@ -17,27 +16,21 @@ pub fn exit(window: &mut RenderWindow) {
 pub fn menu() -> uint {
 	let mut screen:uint = 1;
 	if keyboard::is_key_pressed(keyboard::Space){screen = 2}
+	if keyboard::is_key_pressed(keyboard::U){screen = 3}
 	screen
 }
 
 pub fn card_shift(window:&mut RenderWindow) -> (int, uint) {
 	let mut move = 0; let mut screen:uint = 2;
 
-	loop {
-		match window.poll_event() {
-			event::KeyPressed{code, ..}	=> match code {
-				keyboard::D		=>	{move = 1}
-				keyboard::Right	=>	{move = 1}
-				keyboard::A		=>	{move = -1}
-				keyboard::Left	=>	{move = -1}
-				_			=>	{}
-			},
-			event::NoEvent				=>	break,
-			_							=>	{}
-		}
-	}
 	if keyboard::is_key_pressed(keyboard::D){move = 1}
 	if keyboard::is_key_pressed(keyboard::A){move = -1}
-	if keyboard::is_key_pressed(keyboard::Y){screen = 1}
+	if keyboard::is_key_pressed(keyboard::Escape){screen = 5}
 	(move, screen)
+}
+
+pub fn reading() -> uint {
+	let mut screen:uint = 3;
+	if keyboard::is_key_pressed(keyboard::Escape){screen = 5}
+	screen
 }

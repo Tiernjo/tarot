@@ -6,7 +6,6 @@ use std::rand::{task_rng, Rng};
 mod control;
 mod deck;
 mod menu;
-mod show;
 mod window;
 
 pub fn main_loop() {
@@ -16,8 +15,7 @@ pub fn main_loop() {
 	let (window_x, window_y) = (window_vec.x as f32, window_vec.y as f32);
 	let (window_three_fourth_x, window_fourth_x, window_half_y, window_fourth_y) = (window_x * 3.0 / 4.0, window_x / 4.0, window_y / 2.0, window_y / 4.0);
 	// Main set of bools
-	let (mut screen, title, display, reading) = (1, 1, 2, 3);
-	let (mut is_next_card, mut is_last_card) = (false, false);
+	let mut screen = 1; let mut is_set = false;
 	// Title Text
 	let title_text = ::menu::new("../resources/font/Jura-DemiBold.ttf", "Welcome To Tarot",
 	 	30, window_fourth_x, window_fourth_y, 0.0);
@@ -28,8 +26,9 @@ pub fn main_loop() {
 	let mut rng = task_rng();
 	let title_card = rng.gen_range(0, 77);
 	// What Card are we on
-	let mut card_counter:int = 5;
-	let (all_cards, all_cards_desc) = ::deck::new(window_fourth_x, window_three_fourth_x, window_fourth_y, window_half_y);
+	let mut card_counter = 1;
+	let (mut card_one, mut card_two, mut card_three) = (0, 0, 0);
+	let (mut all_cards, all_cards_desc) = ::deck::new(window_fourth_x, window_three_fourth_x, window_fourth_y, window_half_y);
 
 
 	while window.is_open() {
@@ -48,20 +47,50 @@ pub fn main_loop() {
 			}
 			// Show All Cards
 			2	=>	{
-				if card_counter == 0 {card_counter = 77} else if card_counter == 77 {card_counter = 0}
 				//////////////////////////////////////////////////////////////////////////////////////
 				// OLD METHOD IN CASE I HAVE TO REVERT ///////////////////////////////////////////////
 				//let current_card = ::show::one(window_three_forth_x, window_half_y, card_counter);
 				//////////////////////////////////////////////////////////////////////////////////////
 				let (got_counter, got_screen) = ::control::card_shift(&mut window);
-				card_counter += got_counter;
+				// Never go out of bounds
+				if card_counter == 0 && got_counter == -1 {card_counter = 0}
+					else if card_counter == 77 && got_counter == 1 {card_counter = 77} 
+					else {card_counter += got_counter;} 
+				
 				screen = got_screen;
-
+				is_set = false;
 				show_all(&mut window, &all_cards[card_counter], &all_cards_desc[card_counter]);
 			}
 			// 3 Card Reading
 			3	=>	{
+				if is_set == false {
+					// Generate three cards
+					card_one = rng.gen_range(0, 77);
+					card_two = rng.gen_range(0, 77);
+					card_three = rng.gen_range(0, 77);
+					// Set Position and Scale of each card
+					&all_cards[card_one].set_position2f(window_x/6.0, window_y/2.0);&all_cards[card_one].set_scale2f(0.60, 0.60);
+					&all_cards[card_two].set_position2f(window_x/2.0, window_y/2.0);&all_cards[card_two].set_scale2f(0.60, 0.60);
+					&all_cards[card_three].set_position2f(window_x*5.0/6.0, window_y/2.0);&all_cards[card_three].set_scale2f(0.60, 0.60);
 
+					is_set = true;
+					show_reading(&mut window, &all_cards[card_one], &all_cards[card_two], &all_cards[card_three]);
+				} else if is_set == true{
+					let current_one = card_one;
+					let current_two = card_two;
+					let current_three = card_three;
+					show_reading(&mut window, &all_cards[current_one], &all_cards[current_two], &all_cards[current_three]);
+				}
+
+				let got_screen = ::control::reading();
+				screen = got_screen;
+			}
+			4	=> {
+				
+			}
+			5	=> {
+				show_blank(&mut window);
+				screen = 1;
 			}
 			_		=>	{fail!(~"Error, could not figure out screen to be on.");}
 		}
@@ -81,5 +110,10 @@ fn show_title(window: &mut RenderWindow, title_text: &Text, directions:&Text, ma
 fn show_all(window: &mut RenderWindow, current_card:&Sprite, current_description:&Text) {
 	window.clear(&Color::white());
 	window.draw(current_card); window.draw(current_description);
+	window.display()
+}
+fn show_reading(window:&mut RenderWindow, first_card:&Sprite, second_card:&Sprite, third_card:&Sprite) {
+	window.clear(&Color::white());
+	window.draw(first_card); window.draw(second_card); window.draw(third_card);
 	window.display()
 }

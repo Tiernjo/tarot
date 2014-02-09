@@ -40,6 +40,7 @@ pub fn new(window_fourth_x:f32, window_three_forth_x:f32, window_fourth_y:f32, w
 	let (mut wands, mut wands_desc) = wands(window_fourth_x, window_three_forth_x, window_fourth_y, window_half_y);
 	let (mut swords, mut swords_desc) = swords(window_fourth_x, window_three_forth_x, window_fourth_y, window_half_y);
 
+	// Combine all vectors
 	let mut all = ~[]; let mut all_desc = ~[];
 	all.push_all_move(major_arcana); all_desc.push_all_move(major_arcana_desc);
 	all.push_all_move(cups);all_desc.push_all_move(cups_desc);
@@ -47,10 +48,9 @@ pub fn new(window_fourth_x:f32, window_three_forth_x:f32, window_fourth_y:f32, w
 	all.push_all_move(wands);all_desc.push_all_move(wands_desc);
 	all.push_all_move(swords);all_desc.push_all_move(swords_desc);
 
-	println!("all capacity is {}", all.capacity());
+	// Remove empty indexes
 	all.shrink_to_fit();
 	all_desc.shrink_to_fit();
-	println!("all capacity is {}", all.capacity());
 	(all, all_desc)
 }
 
@@ -99,9 +99,9 @@ fn major_arcana(window_fourth_x:f32, window_three_forth_x:f32, window_fourth_y:f
 		current_sprite.set_position2f(window_three_forth_x, window_half_y);	// set position as 3/4 of window x, 1/2 of window y
 		deck.push(current_sprite);
 		// Setup Text
-		let path:Path = Path::new(deck_info[i].str_loc);
-		let mut file = BufferedReader::new(File::open(&path));
-		let lines:~[~str] = file.lines().collect();
+		let path:Path = Path::new(deck_info[i].str_loc);	// Create a path to file
+		let mut file = BufferedReader::new(File::open(&path));	// Create File Reader
+		let lines:~[~str] = file.lines().collect();	// Write each line into a 
 		let current_text = ::menu::new("../resources/font/Jura-DemiBold.ttf", lines[0], 30, window_fourth_x, window_fourth_y, 0.0);
 		description.push(current_text);
 		i += 1;
