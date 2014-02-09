@@ -14,11 +14,12 @@ pub fn main_loop() {
 	let mut window = ::window::create();
 	let window_vec:Vector2u = window.get_size();
 	let (window_x, window_y) = (window_vec.x as f32, window_vec.y as f32);
-	let (window_three_fourth_x, window_fourth_x, window_half_y, window_fourth_y) = (window_x * 3.0 / 4.0, window_x / 4.0, window_y / 2.0, window_y / 4.0);
+	let (window_three_fourth_x, window_fourth_x, window_sixth_x, window_half_x, window_half_y, window_fourth_y, window_three_fourth_y) = (window_x*3.0/4.0,window_x/4.0,window_x/6.0,window_x/2.0,window_y/2.0,window_y/4.0,window_y*3.0/4.0);
 	// Main set of bools
 	let mut screen = 1; let mut is_set = false; let mut is_initialized = false;
 	// Title Text
-	let title_text = ::menu::new("../resources/font/Jura-DemiBold.ttf", "Welcome To Tarot", 30, window_fourth_x, window_fourth_y, 0.0);
+	let jura_bold = "../resources/font/Jura-DemiBold.ttf";
+	let title_text = ::menu::new(jura_bold, "Welcome To Tarot", 30, window_fourth_x, window_fourth_y, 0.0);
 	// Find random card for title screen
 	let mut rng = task_rng();
 	let title_card = rng.gen_range(0, 77);
@@ -34,12 +35,12 @@ pub fn main_loop() {
 			// Title Screen
 			1   =>	{
 				// Create buttons
-				let all_button = ::button::new(200.0,window_fourth_x, 0.0, 50.0, window_half_y, 0.0);
-				let three_button = ::button::new(200.0, window_fourth_x, 0.0, 50.0, window_half_y, 75.0);
-				let five_button = ::button::new(200.0, window_fourth_x, 0.0, 50.0, window_half_y, 150.0);
-				let (all_clicked, is_all) = ::control::button(&mut window, all_button.get_global_bounds(), 2);
-				let (three_clicked, is_three) = ::control::button(&mut window, three_button.get_global_bounds(), 3);
-				let (five_clicked, is_five) = ::control::button(&mut window, five_button.get_global_bounds(), 4);
+				let (all_button, all_text) = ::button::new(jura_bold, "All Cards", 200.0,window_fourth_x, 0.0, 50.0, window_half_y, 0.0);
+				let (three_button, three_text) = ::button::new(jura_bold, "3 Card Layout", 200.0, window_fourth_x, 0.0, 50.0, window_half_y, 75.0);
+				let (five_button, five_text) = ::button::new(jura_bold, "5 Card Layout", 200.0, window_fourth_x, 0.0, 50.0, window_half_y, 150.0);
+				let (all_clicked, is_all) = ::control::button(&mut window, all_button.get_global_bounds(),1, 2);
+				let (three_clicked, is_three) = ::control::button(&mut window, three_button.get_global_bounds(),1, 3);
+				let (five_clicked, is_five) = ::control::button(&mut window, five_button.get_global_bounds(),1, 4);
 				
 				if is_all {screen = all_clicked} else if is_three {screen = three_clicked} else if is_five {screen = five_clicked}
 				//let got_screen = ::control::menu();
@@ -47,7 +48,8 @@ pub fn main_loop() {
 				// Reset Random Cards
 				is_set = false;
 				let buttons = ~[&all_button, &three_button, &five_button];
-				show_title(&mut window, &title_text, &all_cards[title_card], buttons);
+				let button_text = ~[&all_text, &three_text, &five_text];
+				show_title(&mut window, &title_text, &all_cards[title_card], buttons, button_text);
 			}
 			// Show All Cards
 			2	=>	{
@@ -63,6 +65,9 @@ pub fn main_loop() {
 			}
 			// 3 Card Reading
 			3	=>	{
+				let (back_button, back_text) = ::button::new(jura_bold, "Back", 200.0,window_half_x, 0.0, 50.0, window_three_fourth_y, 0.0);
+				let (back_clicked, is_back) = ::control::button(&mut window, back_button.get_global_bounds(),3,1);
+
 				if is_set == false {
 					// Generate three cards
 					card_one_rand = rng.gen_range(0, 77);
@@ -70,9 +75,7 @@ pub fn main_loop() {
 					if card_one_rand != card_two_rand {} else {card_two_rand = rng.gen_range(0, 77);}
 					card_three_rand = rng.gen_range(0, 77);
 					if (card_three_rand != card_two_rand) || (card_three_rand != card_one_rand) {} else {card_three_rand = rng.gen_range(0, 77);}
-					is_set = true;
-					// Set Position and Scale of each card
-					
+					is_set = true;					
 				} else if is_set == true{
 					let mut card_one = match all_cards[card_one_rand].clone() {
 						Some(card_one)	=>	card_one,
@@ -91,15 +94,16 @@ pub fn main_loop() {
 					&card_three.set_position2f(window_x*5.0/6.0, window_y/3.0);&card_three.set_scale2f(0.60, 0.60);
 					let mut cards = ~[card_one, card_two, card_three];
 					cards.shrink_to_fit();
-					show_reading(&mut window, cards);
+					show_reading(&mut window, cards, &back_button, &back_text);
 				}
-
-				// Check to switch screens
-				let got_screen = ::control::reading(3);
-				screen = got_screen;
+				
+				screen = back_clicked;
 			}
 			// 5 Card Spread
 			4	=> {
+				let (back_button, back_text) = ::button::new(jura_bold, "Back", 200.0,window_sixth_x, 0.0, 50.0, window_three_fourth_y, 0.0);
+				let (back_clicked, is_back) = ::control::button(&mut window, back_button.get_global_bounds(),4,1);
+
 				if is_set == false {
 					card_one_rand = rng.gen_range(0, 77);
 					card_two_rand = rng.gen_range(0, 77);
@@ -143,8 +147,9 @@ pub fn main_loop() {
 
 					let got_screen = ::control::reading(4);
 					screen = got_screen;
-					show_reading(&mut window, cards);
+					show_reading(&mut window, cards, &back_button, &back_text);
 				}
+				screen = back_clicked;
 				
 			}
 			5	=> {
@@ -159,10 +164,13 @@ fn show_blank(window: &mut RenderWindow) {
 	window.clear(&Color::white());
 }
 
-fn show_title(window: &mut RenderWindow, title_text: &Text, main_card:&Sprite, buttons:~[&RectangleShape]) {
+fn show_title(window: &mut RenderWindow, title_text: &Text, main_card:&Sprite, buttons:~[&RectangleShape], button_text:~[&Text]) {
 	window.clear(&Color::white());
 	window.draw(title_text);
 	for contents in buttons.iter() {
+		window.draw(*contents);
+	}
+	for contents in button_text.iter() {
 		window.draw(*contents);
 	}
 	window.draw(main_card);
@@ -173,10 +181,12 @@ fn show_all(window: &mut RenderWindow, current_card:&Sprite, current_description
 	window.draw(current_card); window.draw(current_description);
 	window.display()
 }
-fn show_reading(window:&mut RenderWindow, cards:~[Sprite]) {
+fn show_reading(window:&mut RenderWindow, cards:~[Sprite], back_button:&RectangleShape, back_text:&Text) {
 	window.clear(&Color::white());
 	for card_layout in cards.iter() {
 		window.draw(card_layout);
 	}
+	window.draw(back_button);
+	window.draw(back_text);
 	window.display()
 }

@@ -21,19 +21,24 @@ pub fn menu() -> uint {
 	if keyboard::is_key_pressed(keyboard::I){screen = 4}
 	screen
 }
-pub fn button(window: &mut RenderWindow, button_bounds:FloatRect, to_screen:uint) -> (uint, bool) {
-	let mut screen:uint = 1; let mut is_clicked = false;
+pub fn button(window: &mut RenderWindow, button_bounds:FloatRect, current_screen:uint, to_screen:uint) -> (uint, bool) {
+	let mut screen:uint = current_screen; let mut is_clicked = false;
 	let button_origin_x = button_bounds.left as i32;
-	let button_end_y = button_bounds.height as i32+200+30;
-	let button_end_x = button_bounds.width as i32 + 150;
+	let button_end_y = button_bounds.height as i32;
+	let button_end_x = button_bounds.left as i32 + 200;
 	let button_origin_y = button_bounds.top as i32+56;
 	let mut mouse_loc = window.get_mouse_position();
 	// MouseX is more than box x, MouseX is less than width
 	// MouseY is more than box top, MouseY is less than height
 	if (mouse_loc.x >= button_origin_x) && (mouse_loc.x <= button_end_x) 
 	&& (mouse_loc.y >= button_end_y) && (mouse_loc.y <= button_origin_y) 
-	&& mouse::is_button_pressed(mouse::MouseLeft){screen = to_screen;is_clicked = true}
-	
+	&& mouse::is_button_pressed(mouse::MouseLeft){screen = to_screen;is_clicked = true;}
+
+	if keyboard::is_key_pressed(keyboard::Escape){window.close()}
+
+	println!("mouse_loc.x is {}", mouse_loc.x);println!("mouse_loc.y is {}", mouse_loc.y);
+	println!("button_origin_x is {}", button_origin_x);println!("button_origin_y is {}", button_origin_y);
+	println!("button_end_x is {}", button_end_x);println!("button_end_y is {}", button_end_y);
 	(screen, is_clicked)
 }
 
