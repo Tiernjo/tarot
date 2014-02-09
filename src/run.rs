@@ -33,17 +33,20 @@ pub fn main_loop() {
 		match screen {
 			// Title Screen
 			1   =>	{
+				// Create buttons
 				let all_button = ::button::new(200.0,window_fourth_x, 0.0, 50.0, window_half_y, 0.0);
 				let three_button = ::button::new(200.0, window_fourth_x, 0.0, 50.0, window_half_y, 75.0);
 				let five_button = ::button::new(200.0, window_fourth_x, 0.0, 50.0, window_half_y, 150.0);
-				let all_clicked = ::control::button(&mut window, all_button.get_global_bounds());
-		
-				let buttons = ~[&all_button, &three_button, &five_button];
-
+				let (all_clicked, is_all) = ::control::button(&mut window, all_button.get_global_bounds(), 2);
+				let (three_clicked, is_three) = ::control::button(&mut window, three_button.get_global_bounds(), 3);
+				let (five_clicked, is_five) = ::control::button(&mut window, five_button.get_global_bounds(), 4);
+				
+				if is_all {screen = all_clicked} else if is_three {screen = three_clicked} else if is_five {screen = five_clicked}
 				//let got_screen = ::control::menu();
-				screen = all_clicked;
+				
 				// Reset Random Cards
 				is_set = false;
+				let buttons = ~[&all_button, &three_button, &five_button];
 				show_title(&mut window, &title_text, &all_cards[title_card], buttons);
 			}
 			// Show All Cards
