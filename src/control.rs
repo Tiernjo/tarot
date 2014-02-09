@@ -20,8 +20,8 @@ pub fn menu() -> uint {
 	screen
 }
 
-pub fn card_shift(window:&mut RenderWindow) -> int {
-	let mut move = 0;
+pub fn card_shift(window:&mut RenderWindow) -> (int, uint) {
+	let mut move = 0; let mut screen:uint = 2;
 
 	loop {
 		match window.poll_event() {
@@ -38,5 +38,6 @@ pub fn card_shift(window:&mut RenderWindow) -> int {
 	}
 	if keyboard::is_key_pressed(keyboard::D){move = 1}
 	if keyboard::is_key_pressed(keyboard::A){move = -1}
-	move
+	if keyboard::is_key_pressed(keyboard::Y){screen = 1}
+	(move, screen)
 }

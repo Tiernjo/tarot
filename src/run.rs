@@ -14,22 +14,22 @@ pub fn main_loop() {
 	let mut window = ::window::create();
 	let window_vec:Vector2u = window.get_size();
 	let (window_x, window_y) = (window_vec.x as f32, window_vec.y as f32);
-	let (window_three_forth_x, window_forth_x, window_half_y, window_forth_y) = (window_x * 3.0 / 4.0, window_x / 4.0, window_y / 2.0, window_y / 4.0);
+	let (window_three_fourth_x, window_fourth_x, window_half_y, window_fourth_y) = (window_x * 3.0 / 4.0, window_x / 4.0, window_y / 2.0, window_y / 4.0);
 	// Main set of bools
 	let (mut screen, title, display, reading) = (1, 1, 2, 3);
 	let (mut is_next_card, mut is_last_card) = (false, false);
 	// Title Text
 	let title_text = ::menu::new("../resources/font/Jura-DemiBold.ttf", "Welcome To Tarot",
-	 	30, window_forth_x, window_forth_y, 0.0);
+	 	30, window_fourth_x, window_fourth_y, 0.0);
 	let directions_position = Vector2f::new(0.0, 35.0);
 	let directions = ::menu::new("../resources/font/Jura-DemiBold.ttf", "Press Space To Continue",
-		20, window_forth_x, window_forth_y, 35.0);
+		20, window_fourth_x, window_fourth_y, 35.0);
 	// Find random card for title screen
 	let mut rng = task_rng();
 	let title_card = rng.gen_range(0, 77);
 	// What Card are we on
 	let mut card_counter:int = 5;
-	let all_cards = ::deck::new(window_three_forth_x, window_half_y);
+	let (all_cards, all_cards_desc) = ::deck::new(window_fourth_x, window_three_fourth_x, window_fourth_y, window_half_y);
 
 
 	while window.is_open() {
@@ -53,9 +53,11 @@ pub fn main_loop() {
 				// OLD METHOD IN CASE I HAVE TO REVERT ///////////////////////////////////////////////
 				//let current_card = ::show::one(window_three_forth_x, window_half_y, card_counter);
 				//////////////////////////////////////////////////////////////////////////////////////
-				card_counter += ::control::card_shift(&mut window);
+				let (got_counter, got_screen) = ::control::card_shift(&mut window);
+				card_counter += got_counter;
+				screen = got_screen;
 
-				show_all(&mut window, &all_cards[card_counter]);
+				show_all(&mut window, &all_cards[card_counter], &all_cards_desc[card_counter]);
 			}
 			// 3 Card Reading
 			3	=>	{
@@ -65,6 +67,10 @@ pub fn main_loop() {
 		}
 	}
 }
+fn show_blank(window: &mut RenderWindow) {
+	window.clear(&Color::white());
+	window.display()
+}
 
 fn show_title(window: &mut RenderWindow, title_text: &Text, directions:&Text, main_card:&Sprite) {
 	window.clear(&Color::white());
@@ -72,8 +78,8 @@ fn show_title(window: &mut RenderWindow, title_text: &Text, directions:&Text, ma
 	window.draw(main_card);
 	window.display()
 }
-fn show_all(window: &mut RenderWindow, current_card:&Sprite) {
+fn show_all(window: &mut RenderWindow, current_card:&Sprite, current_description:&Text) {
 	window.clear(&Color::white());
-	window.draw(current_card);
+	window.draw(current_card); window.draw(current_description);
 	window.display()
 }
