@@ -17,6 +17,7 @@ pub fn menu() -> uint {
 	let mut screen:uint = 1;
 	if keyboard::is_key_pressed(keyboard::Space){screen = 2}
 	if keyboard::is_key_pressed(keyboard::U){screen = 3}
+	if keyboard::is_key_pressed(keyboard::I){screen = 4}
 	screen
 }
 
@@ -29,8 +30,7 @@ pub fn card_shift(window:&mut RenderWindow) -> (int, uint) {
 	(move, screen)
 }
 
-pub fn reading() -> uint {
-	let mut screen:uint = 3;
+pub fn reading(mut screen:uint) -> uint {
 	if keyboard::is_key_pressed(keyboard::Escape){screen = 5}
 	screen
 }

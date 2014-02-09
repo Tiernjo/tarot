@@ -27,7 +27,7 @@ pub fn main_loop() {
 	let title_card = rng.gen_range(0, 77);
 	// What Card are we on
 	let mut card_counter = 1;
-	let (mut card_one, mut card_two, mut card_three) = (0, 0, 0);
+	let (mut card_one_rand, mut card_two_rand, mut card_three_rand, mut card_four_rand, mut card_five_rand) = (0,0,0,0,0);
 	let (mut all_cards, all_cards_desc) = ::deck::new(window_fourth_x, window_three_fourth_x, window_fourth_y, window_half_y);
 
 
@@ -43,6 +43,7 @@ pub fn main_loop() {
 				// PART OF OLD METHOD //////////////////////////////////////////////////////////////
 				//let current_card = ::show::one(window_three_forth_x, window_half_y, title_card);
 				////////////////////////////////////////////////////////////////////////////////////
+				is_set = false;
 				show_title(&mut window, &title_text, &directions, &all_cards[title_card]);
 			}
 			// Show All Cards
@@ -58,34 +59,92 @@ pub fn main_loop() {
 					else {card_counter += got_counter;} 
 				
 				screen = got_screen;
-				is_set = false;
 				show_all(&mut window, &all_cards[card_counter], &all_cards_desc[card_counter]);
 			}
 			// 3 Card Reading
 			3	=>	{
 				if is_set == false {
 					// Generate three cards
-					card_one = rng.gen_range(0, 77);
-					card_two = rng.gen_range(0, 77);
-					card_three = rng.gen_range(0, 77);
-					// Set Position and Scale of each card
-					&all_cards[card_one].set_position2f(window_x/6.0, window_y/2.0);&all_cards[card_one].set_scale2f(0.60, 0.60);
-					&all_cards[card_two].set_position2f(window_x/2.0, window_y/2.0);&all_cards[card_two].set_scale2f(0.60, 0.60);
-					&all_cards[card_three].set_position2f(window_x*5.0/6.0, window_y/2.0);&all_cards[card_three].set_scale2f(0.60, 0.60);
-
+					card_one_rand = rng.gen_range(0, 77);
+					card_two_rand = rng.gen_range(0, 77);
+					if card_one_rand != card_two_rand {} else {card_two_rand = rng.gen_range(0, 77);}
+					card_three_rand = rng.gen_range(0, 77);
+					if (card_three_rand != card_two_rand) || (card_three_rand != card_one_rand) {} else {card_three_rand = rng.gen_range(0, 77);}
 					is_set = true;
-					show_reading(&mut window, &all_cards[card_one], &all_cards[card_two], &all_cards[card_three]);
+					// Set Position and Scale of each card
+					
 				} else if is_set == true{
-					let current_one = card_one;
-					let current_two = card_two;
-					let current_three = card_three;
-					show_reading(&mut window, &all_cards[current_one], &all_cards[current_two], &all_cards[current_three]);
+					let mut card_one = match all_cards[card_one_rand].clone() {
+						Some(card_one)	=>	card_one,
+						None()			=>	fail!(~"Error, card_one created.")
+					};
+					let mut card_two = match all_cards[card_two_rand].clone() {
+						Some(card_two)	=>	card_two,
+						None()			=>	fail!(~"Error, card_two created.")
+					};
+					let mut card_three = match all_cards[card_three_rand].clone() {
+						Some(card_three)	=>	card_three,
+						None()			=>	fail!(~"Error, card_three created.")
+					};
+					&card_one.set_position2f(window_x/6.0, window_y/3.0);&card_one.set_scale2f(0.60, 0.60);
+					&card_two.set_position2f(window_x/2.0, window_y*2.0/3.0);&card_two.set_scale2f(0.60, 0.60);
+					&card_three.set_position2f(window_x*5.0/6.0, window_y/3.0);&card_three.set_scale2f(0.60, 0.60);
+					let mut cards = ~[card_one, card_two, card_three];
+					cards.shrink_to_fit();
+					show_reading(&mut window, cards);
 				}
 
-				let got_screen = ::control::reading();
+				// Check to switch screens
+				let got_screen = ::control::reading(3);
 				screen = got_screen;
 			}
+			// 5 Card Spread
 			4	=> {
+				if is_set == false {
+					card_one_rand = rng.gen_range(0, 77);
+					card_two_rand = rng.gen_range(0, 77);
+					if card_one_rand != card_two_rand {} else {card_two_rand = rng.gen_range(0, 77);}
+					card_three_rand = rng.gen_range(0, 77);
+					if (card_three_rand != card_two_rand) || (card_three_rand != card_one_rand) {} else {card_three_rand = rng.gen_range(0, 77);}
+					card_four_rand = rng.gen_range(0, 77);
+					if (card_four_rand != card_two_rand) || (card_four_rand != card_one_rand) || (card_four_rand != card_three_rand) {} else {card_three_rand = rng.gen_range(0, 77);}
+					card_five_rand = rng.gen_range(0, 77);
+					if (card_five_rand != card_two_rand) || (card_five_rand != card_one_rand) || (card_five_rand != card_four_rand) || (card_five_rand != card_three_rand) {} else {card_three_rand = rng.gen_range(0, 77);}
+					is_set = true;
+				} else if is_set == true{
+					let mut card_one = match all_cards[card_one_rand].clone() {
+						Some(card_one)	=>	card_one,
+						None()			=>	fail!(~"Error, card_one created.")
+					};
+					let mut card_two = match all_cards[card_two_rand].clone() {
+						Some(card_two)	=>	card_two,
+						None()			=>	fail!(~"Error, card_two created.")
+					};
+					let mut card_three = match all_cards[card_three_rand].clone() {
+						Some(card_three)	=>	card_three,
+						None()			=>	fail!(~"Error, card_three created.")
+					};
+					let mut card_four = match all_cards[card_four_rand].clone() {
+						Some(card_four)	=>	card_four,
+						None()			=>	fail!(~"Error, card_four created.")
+					};
+					let mut card_five = match all_cards[card_five_rand].clone() {
+						Some(card_five)	=>	card_five,
+						None()			=>	fail!(~"Error, card_five created.")
+					};
+
+					&card_one.set_position2f(window_x/6.0, window_y/4.0);&card_one.set_scale2f(0.40, 0.40);
+					&card_two.set_position2f(window_x/3.0, window_y*3.0/4.0);&card_two.set_scale2f(0.40, 0.40);
+					&card_three.set_position2f(window_x/2.0, window_y/4.0);&card_three.set_scale2f(0.40, 0.40);
+					&card_four.set_position2f(window_x*4.0/6.0, window_y*3.0/4.0);&card_four.set_scale2f(0.40, 0.40);
+					&card_five.set_position2f(window_x*5.0/6.0, window_y/4.0);&card_five.set_scale2f(0.40, 0.40);
+					let mut cards = ~[card_one, card_two, card_three, card_four, card_five];
+					cards.shrink_to_fit();
+
+					let got_screen = ::control::reading(4);
+					screen = got_screen;
+					show_reading(&mut window, cards);
+				}
 				
 			}
 			5	=> {
@@ -112,8 +171,10 @@ fn show_all(window: &mut RenderWindow, current_card:&Sprite, current_description
 	window.draw(current_card); window.draw(current_description);
 	window.display()
 }
-fn show_reading(window:&mut RenderWindow, first_card:&Sprite, second_card:&Sprite, third_card:&Sprite) {
+fn show_reading(window:&mut RenderWindow, cards:~[Sprite]) {
 	window.clear(&Color::white());
-	window.draw(first_card); window.draw(second_card); window.draw(third_card);
+	for card_layout in cards.iter() {
+		window.draw(card_layout);
+	}
 	window.display()
 }
