@@ -8,7 +8,7 @@ Goals
 
 * ~~Random generation~~
 * ~~Load multiple images (sprites)~~
-* Multiple Contexts
+* ~~Multiple Contexts~~
 * Choose to examine cards or get reading
 * Multiple readings
 * Move cards around - stretch goal
