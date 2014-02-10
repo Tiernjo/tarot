@@ -13,7 +13,6 @@ mod window;
 fn start(argc: int, argv: **u8) -> int { 
     native::start(argc, argv, main)
 }
-
 fn main() {
 	// Run Program
 	::run::main_loop();

@@ -33,13 +33,14 @@ impl <'s>Card<'s> {
 }
 
 pub fn new(window_fourth_x:f32, window_three_forth_x:f32, window_fourth_y:f32, window_half_y:f32) -> (~[Sprite], ~[Text]) {
+	// Get all Decks and Their names
 	let (major_arcana, major_arcana_desc) = major_arcana(window_fourth_x, window_three_forth_x, window_fourth_y, window_half_y);
 	let (cups, cups_desc) = cups(window_fourth_x, window_three_forth_x, window_fourth_y, window_half_y);
 	let (pentacles, pentacles_desc) = pentacles(window_fourth_x, window_three_forth_x, window_fourth_y, window_half_y);
 	let (wands, wands_desc) = wands(window_fourth_x, window_three_forth_x, window_fourth_y, window_half_y);
 	let (swords, swords_desc) = swords(window_fourth_x, window_three_forth_x, window_fourth_y, window_half_y);
 
-	// Combine all vectors
+	// Combine all vectors/Decks
 	let mut all = ~[]; let mut all_desc = ~[];
 	all.push_all_move(major_arcana); all_desc.push_all_move(major_arcana_desc);
 	all.push_all_move(cups);all_desc.push_all_move(cups_desc);
@@ -102,6 +103,7 @@ fn major_arcana(window_fourth_x:f32, window_three_forth_x:f32, window_fourth_y:f
 		let mut file = BufferedReader::new(File::open(&path));	// Create File Reader
 		let lines:~[~str] = file.lines().collect();	// Write each line into a 
 		let current_text = ::menu::new("../resources/font/Jura-DemiBold.ttf", lines[0], 30, window_fourth_x, window_fourth_y, 0.0);
+		println!("current_text is {}", lines[0]);
 		description.push(current_text);
 		i += 1;
 	}

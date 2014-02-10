@@ -10,10 +10,14 @@ mod menu;
 mod window;
 
 pub fn main_loop() {
-	// Window declare and info retrieval
-	let mut window = ::window::create();
-	let window_vec:Vector2u = window.get_size();
+	// Window declare and info set
+	let window_vec:Vector2u = Vector2u::new(900, 600);
 	let (window_x, window_y) = (window_vec.x as f32, window_vec.y as f32);
+	// Setup Cards
+	let (mut card_one_rand, mut card_two_rand, mut card_three_rand, mut card_four_rand, mut card_five_rand) = (0,0,0,0,0);
+	let (mut all_cards, mut all_cards_desc) = ::deck::new(window_x/4.0, window_x*3.0/4.0, window_y/4.0, window_y/2.0);
+	// Create Window
+	let mut window = ::window::create(window_vec);	
 	// Main set of bools
 	let mut screen = 1; let mut is_set = false;
 	// Title Text
@@ -24,8 +28,9 @@ pub fn main_loop() {
 	let title_card = rng.gen_range(0, 77);
 	// What Card are we on
 	let mut card_counter = 0;
-	let (mut card_one_rand, mut card_two_rand, mut card_three_rand, mut card_four_rand, mut card_five_rand) = (0,0,0,0,0);
-	let (mut all_cards, all_cards_desc) = ::deck::new(window_x/4.0, window_x*3.0/4.0, window_y/4.0, window_y/2.0);
+	// Clear empty indexi of Deck
+	all_cards.shrink_to_fit();
+	all_cards_desc.shrink_to_fit();
 
 	while window.is_open() {
 		show_blank(&mut window);
