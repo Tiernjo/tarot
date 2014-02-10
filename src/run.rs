@@ -23,7 +23,7 @@ pub fn main_loop() {
 	let mut rng = task_rng();
 	let title_card = rng.gen_range(0, 77);
 	// What Card are we on
-	let mut card_counter = 1;
+	let mut card_counter = 0;
 	let (mut card_one_rand, mut card_two_rand, mut card_three_rand, mut card_four_rand, mut card_five_rand) = (0,0,0,0,0);
 	let (mut all_cards, all_cards_desc) = ::deck::new(window_x/4.0, window_x*3.0/4.0, window_y/4.0, window_y/2.0);
 
@@ -41,9 +41,8 @@ pub fn main_loop() {
 				let (all_clicked, is_all) = ::control::button(&mut window, all_button.get_global_bounds(),1, 2);
 				let (three_clicked, is_three) = ::control::button(&mut window, three_button.get_global_bounds(),1, 3);
 				let (five_clicked, is_five) = ::control::button(&mut window, five_button.get_global_bounds(),1, 4);
-				
+
 				if is_all {screen = all_clicked} else if is_three {screen = three_clicked} else if is_five {screen = five_clicked}
-				//let got_screen = ::control::menu();
 				
 				// Reset Random Cards
 				is_set = false;
@@ -53,15 +52,23 @@ pub fn main_loop() {
 			}
 			// Show All Cards
 			2	=>	{
-				let (back_button, back_text) = ::button::new(jura_bold, "Back", 200.0,window_x/4.0, 0.0, 50.0, window_y*2.0/6.0, 0.0);
+				let (back_button, back_text) = ::button::new(jura_bold, "Back to Title", 200.0,window_x/4.0, 0.0, 50.0, window_y*2.0/6.0, 0.0);
+				let (last_button, last_text) = ::button::new(jura_bold, "Last Card", 200.0,window_x/4.0, 0.0, 50.0, window_y*4.0/6.0, 0.0);
+				let (next_button, next_text) = ::button::new(jura_bold, "Next Card", 200.0,window_x/4.0, 0.0, 50.0, window_y*5.0/6.0, 0.0);
 				let (back_clicked, is_back) = ::control::button(&mut window, back_button.get_global_bounds(),2,1);
+				let (_, is_left) = ::control::button(&mut window, last_button.get_global_bounds(), 2, 2);
+				let (_, is_right) = ::control::button(&mut window, next_button.get_global_bounds(), 2, 2);
 				if is_back {screen = back_clicked}
+				if is_left && card_counter > 0 {card_counter -= 1}
+				if is_right && card_counter < 77{card_counter += 1}
 
-				show_all(&mut window, &all_cards[card_counter], &all_cards_desc[card_counter], &back_button, &back_text);
+				let buttons = ~[&back_button, &last_button, &next_button];
+				let button_text = ~[&back_text, &last_text, &next_text];
+				show_all(&mut window, &all_cards[card_counter], &all_cards_desc[card_counter], buttons, button_text);
 			}
 			// 3 Card Reading
 			3	=>	{
-				let (back_button, back_text) = ::button::new(jura_bold, "Back", 200.0,window_x/2.0, 0.0, 50.0, window_y*5.0/6.0, 0.0);
+				let (back_button, back_text) = ::button::new(jura_bold, "Back to Title", 200.0,window_x/2.0, 0.0, 50.0, window_y*5.0/6.0, 0.0);
 				let (back_clicked, is_back) = ::control::button(&mut window, back_button.get_global_bounds(),3,1);
 
 				if is_set == false {
@@ -97,7 +104,7 @@ pub fn main_loop() {
 			}
 			// 5 Card Spread
 			4	=> {
-				let (back_button, back_text) = ::button::new(jura_bold, "Back", 200.0,window_x/2.0, 0.0, 50.0, window_y*5.0/6.0, 0.0);
+				let (back_button, back_text) = ::button::new(jura_bold, "Back to Title", 200.0,window_x/2.0, 0.0, 50.0, window_y*5.0/6.0, 0.0);
 				let (back_clicked, is_back) = ::control::button(&mut window, back_button.get_global_bounds(),4,1);
 
 				if is_set == false {
@@ -170,10 +177,15 @@ fn show_title(window: &mut RenderWindow, title_text: &Text, main_card:&Sprite, b
 	window.draw(main_card);
 	window.display()
 }
-fn show_all(window: &mut RenderWindow, current_card:&Sprite, current_description:&Text, back_button:&RectangleShape, back_text:&Text) {
+fn show_all(window: &mut RenderWindow, current_card:&Sprite, current_description:&Text, buttons:~[&RectangleShape], button_text:~[&Text]) {
 	window.clear(&Color::white());
 	window.draw(current_card); window.draw(current_description);
-	window.draw(back_button); window.draw(back_text);
+	for contents in buttons.iter() {
+		window.draw(*contents);
+	}
+	for contents in button_text.iter() {
+		window.draw(*contents);
+	}
 	window.display()
 }
 fn show_reading(window:&mut RenderWindow, cards:~[Sprite], back_button:&RectangleShape, back_text:&Text) {
