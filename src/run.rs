@@ -1,7 +1,7 @@
 extern mod rsfml;
 use rsfml::graphics::{Color, RectangleShape, RenderWindow};
 use rsfml::graphics::rc::{Sprite, Text};
-use rsfml::system::{Vector2u};
+use rsfml::system::{Clock, Time, Vector2u};
 use std::rand::{task_rng, Rng};
 mod button;
 mod control;
@@ -31,6 +31,7 @@ pub fn main_loop() {
 	// Clear empty indexi of Deck
 	all_cards.shrink_to_fit();
 	all_cards_desc.shrink_to_fit();
+	let mut input_timer = Clock::new();
 
 	while window.is_open() {
 		show_blank(&mut window);
@@ -47,7 +48,10 @@ pub fn main_loop() {
 				let (three_clicked, is_three) = ::control::button(&mut window, three_button.get_global_bounds(),1, 3);
 				let (five_clicked, is_five) = ::control::button(&mut window, five_button.get_global_bounds(),1, 4);
 
-				if is_all {screen = all_clicked} else if is_three {screen = three_clicked} else if is_five {screen = five_clicked}
+				if input_timer.get_elapsed_time() > Time::with_seconds(0.09){
+					if is_all {screen = all_clicked} else if is_three {screen = three_clicked} else if is_five {screen = five_clicked}
+					input_timer.restart();
+				};
 				
 				// Reset Random Cards
 				is_set = false;
@@ -57,15 +61,19 @@ pub fn main_loop() {
 			}
 			// Show All Cards
 			2	=>	{
-				let (back_button, back_text) = ::button::new(jura_bold, "Back to Title", 200.0,window_x/4.0, 0.0, 50.0, window_y*2.0/6.0, 0.0);
+				let (back_button, back_text) = ::button::new(jura_bold, "Back to Title", 200.0,window_x/4.0, 0.0, 50.0, window_y/2.0, 0.0);
 				let (last_button, last_text) = ::button::new(jura_bold, "Last Card", 200.0,window_x/4.0, 0.0, 50.0, window_y*4.0/6.0, 0.0);
 				let (next_button, next_text) = ::button::new(jura_bold, "Next Card", 200.0,window_x/4.0, 0.0, 50.0, window_y*5.0/6.0, 0.0);
 				let (back_clicked, is_back) = ::control::button(&mut window, back_button.get_global_bounds(),2,1);
 				let (_, is_left) = ::control::button(&mut window, last_button.get_global_bounds(), 2, 2);
 				let (_, is_right) = ::control::button(&mut window, next_button.get_global_bounds(), 2, 2);
-				if is_back {screen = back_clicked}
-				if is_left && card_counter > 0 {card_counter -= 1}
-				if is_right && card_counter < 77{card_counter += 1}
+				if input_timer.get_elapsed_time() > Time::with_seconds(0.09){
+					if is_back {screen = back_clicked}
+					if is_left && card_counter > 0 {card_counter -= 1};
+					if is_right && card_counter < 77{card_counter += 1};
+					input_timer.restart();
+				};
+					
 
 				let buttons = ~[&back_button, &last_button, &next_button];
 				let button_text = ~[&back_text, &last_text, &next_text];
