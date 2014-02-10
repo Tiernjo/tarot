@@ -1,7 +1,7 @@
 extern mod rsfml;
 use rsfml::graphics::{Color, RectangleShape, RenderWindow};
 use rsfml::graphics::rc::{Sprite, Text};
-use rsfml::system::{Vector2f, Vector2u};
+use rsfml::system::{Vector2u};
 use std::rand::{task_rng, Rng};
 mod button;
 mod control;
@@ -14,30 +14,30 @@ pub fn main_loop() {
 	let mut window = ::window::create();
 	let window_vec:Vector2u = window.get_size();
 	let (window_x, window_y) = (window_vec.x as f32, window_vec.y as f32);
-	let (window_three_fourth_x, window_fourth_x, window_sixth_x, window_half_x, window_half_y, window_fourth_y, window_three_fourth_y) = (window_x*3.0/4.0,window_x/4.0,window_x/6.0,window_x/2.0,window_y/2.0,window_y/4.0,window_y*3.0/4.0);
 	// Main set of bools
-	let mut screen = 1; let mut is_set = false; let mut is_initialized = false;
+	let mut screen = 1; let mut is_set = false;
 	// Title Text
 	let jura_bold = "../resources/font/Jura-DemiBold.ttf";
-	let title_text = ::menu::new(jura_bold, "Welcome To Tarot", 30, window_fourth_x, window_fourth_y, 0.0);
+	let title_text = ::menu::new(jura_bold, "Welcome To Tarot", 30, window_x/4.0, window_y/4.0, 0.0);
 	// Find random card for title screen
 	let mut rng = task_rng();
 	let title_card = rng.gen_range(0, 77);
 	// What Card are we on
 	let mut card_counter = 1;
 	let (mut card_one_rand, mut card_two_rand, mut card_three_rand, mut card_four_rand, mut card_five_rand) = (0,0,0,0,0);
-	let (mut all_cards, all_cards_desc) = ::deck::new(window_fourth_x, window_three_fourth_x, window_fourth_y, window_half_y);
+	let (mut all_cards, all_cards_desc) = ::deck::new(window_x/4.0, window_x*3.0/4.0, window_y/4.0, window_y/2.0);
 
 	while window.is_open() {
 		show_blank(&mut window);
 		::control::exit(&mut window);
+
 		match screen {
 			// Title Screen
 			1   =>	{
 				// Create buttons
-				let (all_button, all_text) = ::button::new(jura_bold, "All Cards", 200.0,window_fourth_x, 0.0, 50.0, window_half_y, 0.0);
-				let (three_button, three_text) = ::button::new(jura_bold, "3 Card Layout", 200.0, window_fourth_x, 0.0, 50.0, window_half_y, 75.0);
-				let (five_button, five_text) = ::button::new(jura_bold, "5 Card Layout", 200.0, window_fourth_x, 0.0, 50.0, window_half_y, 150.0);
+				let (all_button, all_text) = ::button::new(jura_bold, "All Cards", 200.0,window_x/4.0, 0.0, 50.0, window_y/2.0, 0.0);
+				let (three_button, three_text) = ::button::new(jura_bold, "3 Card Layout", 200.0, window_x/4.0, 0.0, 50.0, window_y*4.0/6.0, 75.0);
+				let (five_button, five_text) = ::button::new(jura_bold, "5 Card Layout", 200.0, window_x/4.0, 0.0, 50.0, window_y*5.0/6.0, 150.0);
 				let (all_clicked, is_all) = ::control::button(&mut window, all_button.get_global_bounds(),1, 2);
 				let (three_clicked, is_three) = ::control::button(&mut window, three_button.get_global_bounds(),1, 3);
 				let (five_clicked, is_five) = ::control::button(&mut window, five_button.get_global_bounds(),1, 4);
@@ -53,19 +53,15 @@ pub fn main_loop() {
 			}
 			// Show All Cards
 			2	=>	{
-				// Controls
-				let (got_counter, got_screen) = ::control::card_shift(&mut window);
-				// Never go out of bounds
-				if card_counter == 0 && got_counter == -1 {card_counter = 0}
-					else if card_counter == 77 && got_counter == 1 {card_counter = 77} 
-					else {card_counter += got_counter;} 
-				
-				screen = got_screen;
-				show_all(&mut window, &all_cards[card_counter], &all_cards_desc[card_counter]);
+				let (back_button, back_text) = ::button::new(jura_bold, "Back", 200.0,window_x/4.0, 0.0, 50.0, window_y*2.0/6.0, 0.0);
+				let (back_clicked, is_back) = ::control::button(&mut window, back_button.get_global_bounds(),2,1);
+				if is_back {screen = back_clicked}
+
+				show_all(&mut window, &all_cards[card_counter], &all_cards_desc[card_counter], &back_button, &back_text);
 			}
 			// 3 Card Reading
 			3	=>	{
-				let (back_button, back_text) = ::button::new(jura_bold, "Back", 200.0,window_half_x, 0.0, 50.0, window_three_fourth_y, 0.0);
+				let (back_button, back_text) = ::button::new(jura_bold, "Back", 200.0,window_x/2.0, 0.0, 50.0, window_y*5.0/6.0, 0.0);
 				let (back_clicked, is_back) = ::control::button(&mut window, back_button.get_global_bounds(),3,1);
 
 				if is_set == false {
@@ -101,7 +97,7 @@ pub fn main_loop() {
 			}
 			// 5 Card Spread
 			4	=> {
-				let (back_button, back_text) = ::button::new(jura_bold, "Back", 200.0,window_sixth_x, 0.0, 50.0, window_three_fourth_y, 0.0);
+				let (back_button, back_text) = ::button::new(jura_bold, "Back", 200.0,window_x/2.0, 0.0, 50.0, window_y*5.0/6.0, 0.0);
 				let (back_clicked, is_back) = ::control::button(&mut window, back_button.get_global_bounds(),4,1);
 
 				if is_set == false {
@@ -140,13 +136,11 @@ pub fn main_loop() {
 					&card_one.set_position2f(window_x/6.0, window_y/4.0);&card_one.set_scale2f(0.45, 0.45);
 					&card_two.set_position2f(window_x/2.0, window_y/4.0);&card_two.set_scale2f(0.45, 0.45);
 					&card_three.set_position2f(window_x*5.0/6.0, window_y/4.0);&card_three.set_scale2f(0.45, 0.45);
-					&card_four.set_position2f(window_x/2.0, window_y*3.0/4.0);&card_four.set_scale2f(0.45, 0.45);
+					&card_four.set_position2f(window_x/6.0, window_y*3.0/4.0);&card_four.set_scale2f(0.45, 0.45);
 					&card_five.set_position2f(window_x*5.0/6.0, window_y*3.0/4.0);&card_five.set_scale2f(0.45, 0.45);
 					let mut cards = ~[card_one, card_two, card_three, card_four, card_five];
 					cards.shrink_to_fit();
 
-					let got_screen = ::control::reading(4);
-					screen = got_screen;
 					show_reading(&mut window, cards, &back_button, &back_text);
 				}
 				screen = back_clicked;
@@ -176,9 +170,10 @@ fn show_title(window: &mut RenderWindow, title_text: &Text, main_card:&Sprite, b
 	window.draw(main_card);
 	window.display()
 }
-fn show_all(window: &mut RenderWindow, current_card:&Sprite, current_description:&Text) {
+fn show_all(window: &mut RenderWindow, current_card:&Sprite, current_description:&Text, back_button:&RectangleShape, back_text:&Text) {
 	window.clear(&Color::white());
 	window.draw(current_card); window.draw(current_description);
+	window.draw(back_button); window.draw(back_text);
 	window.display()
 }
 fn show_reading(window:&mut RenderWindow, cards:~[Sprite], back_button:&RectangleShape, back_text:&Text) {

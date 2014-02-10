@@ -1,7 +1,6 @@
 extern mod rsfml;
 use rsfml::graphics::{Color, Font};
 use rsfml::graphics::rc::Text;
-use rsfml::system::{Vector2f};
 use std::cell::RefCell;
 use std::rc::Rc;
 
