@@ -12,7 +12,7 @@ Goals
 * ~~Choose to examine cards or get reading~~
 * ~~Multiple readings~~
 * Move cards around - stretch goal
-* Read card descritions from text file - stretch goal
+* ~~Read card descritions from text file - stretch goal~~ done-ish
 
 Tarot Deck
 ==========
